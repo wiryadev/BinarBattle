@@ -1,17 +1,20 @@
-package com.wiryadev.binarbattle.ui.register
+package com.wiryadev.binarbattle.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.wiryadev.binarbattle.entity.CommonResponse
 import com.wiryadev.binarbattle.network.ApiClient
-import com.wiryadev.binarbattle.network.NetworkUtil
+import com.wiryadev.binarbattle.pref.SessionPreference
+import com.wiryadev.binarbattle.pref.UserSession
+import com.wiryadev.binarbattle.ui.login.LoginViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.launch
 
-class RegisterViewModel : ViewModel() {
+class HomeViewModel(
+    private val pref: SessionPreference,
+) : ViewModel() {
 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData(false)
     val loading: LiveData<Boolean> get() = _loading
@@ -19,21 +22,25 @@ class RegisterViewModel : ViewModel() {
     private val _error: MutableLiveData<Throwable?> = MutableLiveData(null)
     val error: LiveData<Throwable?> get() = _error
 
-    private val _commonResponse: MutableLiveData<CommonResponse> = MutableLiveData()
-    val commonResponse: LiveData<CommonResponse> get() = _commonResponse
+    private val _authResponse: MutableLiveData<CommonResponse> = MutableLiveData()
+    val authResponse: LiveData<CommonResponse> get() = _authResponse
 
-    fun register(
-        email: String,
-        username: String,
-        password: String,
+    var token = ""
+
+    fun getUser(): LiveData<UserSession> {
+        return pref.getUserSession().asLiveData()
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            pref.deleteUserSession()
+        }
+    }
+
+    fun auth(
+        token: String
     ) {
-        val body = NetworkUtil.createRequestBody(
-            "email" to email,
-            "username" to username,
-            "password" to password,
-        )
-
-        ApiClient.getApiService().register(requestBody = body)
+        ApiClient.getApiService().auth(token = "Bearer $token")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<CommonResponse> {
@@ -43,7 +50,7 @@ class RegisterViewModel : ViewModel() {
                 }
 
                 override fun onNext(t: CommonResponse) {
-                    _commonResponse.postValue(t)
+                    _authResponse.postValue(t)
                 }
 
                 override fun onError(e: Throwable) {
@@ -55,5 +62,16 @@ class RegisterViewModel : ViewModel() {
                     _loading.postValue(false)
                 }
             })
+    }
+
+}
+
+class HomeViewModelFactory(
+    private val pref: SessionPreference
+) : ViewModelProvider.NewInstanceFactory() {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return HomeViewModel(pref = pref) as T
     }
 }

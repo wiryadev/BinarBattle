@@ -5,4 +5,7 @@
     <string name="password">Password</string>
     <string name="register">Register</string>
     <string name="username">Username</string>
+    <string name="picture">Picture</string>
+    <string name="update">Update</string>
+    <string name="logout">Logout</string>
 </resources>

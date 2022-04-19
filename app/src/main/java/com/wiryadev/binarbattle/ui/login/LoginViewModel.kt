@@ -1,23 +1,30 @@
 package com.wiryadev.binarbattle.ui.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.wiryadev.binarbattle.entity.LoginResponse
 import com.wiryadev.binarbattle.network.ApiClient
 import com.wiryadev.binarbattle.network.NetworkUtil
+import com.wiryadev.binarbattle.pref.SessionPreference
+import com.wiryadev.binarbattle.pref.UserSession
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val pref: SessionPreference,
+) : ViewModel() {
 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData(false)
     val loading: LiveData<Boolean> get() = _loading
 
     private val _loginResponse: MutableLiveData<LoginResponse> = MutableLiveData()
     val loginResponse: LiveData<LoginResponse> get() = _loginResponse
+
+    fun getUser(): LiveData<UserSession> {
+        return pref.getUserSession().asLiveData()
+    }
 
     fun login(
         email: String,
@@ -48,5 +55,21 @@ class LoginViewModel : ViewModel() {
                     _loading.postValue(false)
                 }
             })
+    }
+
+    fun saveUser(userSession: UserSession) {
+        viewModelScope.launch {
+            pref.saveUserSession(userSession)
+        }
+    }
+}
+
+class LoginViewModelFactory(
+    private val pref: SessionPreference
+) : ViewModelProvider.NewInstanceFactory() {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return LoginViewModel(pref = pref) as T
     }
 }

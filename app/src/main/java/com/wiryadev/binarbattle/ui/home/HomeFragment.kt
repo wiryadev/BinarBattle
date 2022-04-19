@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -114,12 +113,13 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.updateResponse.observe(viewLifecycleOwner) { response ->
-            Log.d("UpdateResponse", "onViewCreated: $response")
-            val user = response.commonData
+            val user = response.updateData
             with(binding) {
                 etUsername.setText(user.username)
                 etEmail.setText(user.email)
-
+                user.photo?.let {
+                    ivUpdate.load(it)
+                }
 
                 if (response.success) {
                     root.showSnackbar("Update success")

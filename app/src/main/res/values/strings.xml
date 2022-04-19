@@ -9,4 +9,5 @@
     <string name="gallery_chooser_title">Select Picture</string>
     <string name="update">Update</string>
     <string name="logout">Logout</string>
+    <string name="image_from_update">Image from update</string>
 </resources>

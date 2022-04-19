@@ -2,6 +2,7 @@ package com.wiryadev.binarbattle.network
 
 import com.wiryadev.binarbattle.entity.CommonResponse
 import com.wiryadev.binarbattle.entity.LoginResponse
+import com.wiryadev.binarbattle.entity.UpdateResponse
 import io.reactivex.rxjava3.core.Observable
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -25,6 +26,6 @@ interface ApiService {
         @Part("username") username: RequestBody,
         @Part("email") email: RequestBody,
         @Part file: MultipartBody.Part,
-    ): Observable<CommonResponse>
+    ): Observable<UpdateResponse>
 
 }

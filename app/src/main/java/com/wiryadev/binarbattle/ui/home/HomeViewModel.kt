@@ -2,6 +2,7 @@ package com.wiryadev.binarbattle.ui.home
 
 import androidx.lifecycle.*
 import com.wiryadev.binarbattle.entity.CommonResponse
+import com.wiryadev.binarbattle.entity.UpdateResponse
 import com.wiryadev.binarbattle.network.ApiClient
 import com.wiryadev.binarbattle.pref.SessionPreference
 import com.wiryadev.binarbattle.pref.UserSession
@@ -34,8 +35,8 @@ class HomeViewModel(
     private val _authResponse: MutableLiveData<CommonResponse> = MutableLiveData()
     val authResponse: LiveData<CommonResponse> get() = _authResponse
 
-    private val _updateResponse: MutableLiveData<CommonResponse> = MutableLiveData()
-    val updateResponse: LiveData<CommonResponse> get() = _updateResponse
+    private val _updateResponse: MutableLiveData<UpdateResponse> = MutableLiveData()
+    val updateResponse: LiveData<UpdateResponse> get() = _updateResponse
 
     private val _file: MutableLiveData<File?> = MutableLiveData(null)
     val file: LiveData<File?> get() = _file
@@ -107,13 +108,13 @@ class HomeViewModel(
             )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<CommonResponse> {
+            .subscribe(object : Observer<UpdateResponse> {
                 override fun onSubscribe(d: Disposable) {
                     _error.postValue(null)
                     _loading.postValue(true)
                 }
 
-                override fun onNext(t: CommonResponse) {
+                override fun onNext(t: UpdateResponse) {
                     _updateResponse.postValue(t)
                 }
 

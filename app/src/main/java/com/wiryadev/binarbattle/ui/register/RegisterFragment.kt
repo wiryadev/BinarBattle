@@ -46,13 +46,13 @@ class RegisterFragment : Fragment() {
             binding.progressBar.isVisible = isLoading
         }
 
-        viewModel.registerResponse.observe(viewLifecycleOwner) { response ->
+        viewModel.commonResponse.observe(viewLifecycleOwner) { response ->
             if (response.success) {
-                binding.root.showSnackbar(response.dataRegister.username)
+                binding.root.showSnackbar(response.commonData.username)
                 Thread.sleep(Snackbar.LENGTH_LONG.toLong())
                 findNavController().navigateUp()
             }
-            Log.d("Register", "onViewCreated: ${response.dataRegister}")
+            Log.d("Register", "onViewCreated: ${response.commonData}")
         }
 
         viewModel.error.observe(viewLifecycleOwner) { error ->

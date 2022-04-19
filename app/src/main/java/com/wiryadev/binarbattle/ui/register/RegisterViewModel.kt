@@ -3,7 +3,7 @@ package com.wiryadev.binarbattle.ui.register
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.wiryadev.binarbattle.entity.RegisterResponse
+import com.wiryadev.binarbattle.entity.CommonResponse
 import com.wiryadev.binarbattle.network.ApiClient
 import com.wiryadev.binarbattle.network.NetworkUtil
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -19,8 +19,8 @@ class RegisterViewModel : ViewModel() {
     private val _error: MutableLiveData<Throwable> = MutableLiveData(null)
     val error: LiveData<Throwable> get() = _error
 
-    private val _registerResponse: MutableLiveData<RegisterResponse> = MutableLiveData()
-    val registerResponse: LiveData<RegisterResponse> get() = _registerResponse
+    private val _commonResponse: MutableLiveData<CommonResponse> = MutableLiveData()
+    val commonResponse: LiveData<CommonResponse> get() = _commonResponse
 
     fun register(
         email: String,
@@ -36,14 +36,14 @@ class RegisterViewModel : ViewModel() {
         ApiClient.getApiService().register(requestBody = body)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<RegisterResponse> {
+            .subscribe(object : Observer<CommonResponse> {
                 override fun onSubscribe(d: Disposable) {
                     _error.postValue(null)
                     _loading.postValue(true)
                 }
 
-                override fun onNext(t: RegisterResponse) {
-                    _registerResponse.postValue(t)
+                override fun onNext(t: CommonResponse) {
+                    _commonResponse.postValue(t)
                 }
 
                 override fun onError(e: Throwable) {

@@ -3,9 +3,9 @@ package com.wiryadev.binarbattle.entity
 
 import com.google.gson.annotations.SerializedName
 
-data class RegisterResponse(
+data class CommonResponse(
     @SerializedName("data")
-    val dataRegister: DataRegister,
+    val commonData: CommonData,
     @SerializedName("success")
     val success: Boolean
 )

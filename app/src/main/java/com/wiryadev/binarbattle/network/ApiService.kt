@@ -18,7 +18,8 @@ interface ApiService {
     @GET("auth/me")
     fun auth(@Header("Authorization") token: String): Observable<CommonResponse>
 
-    @POST("auth/users")
+    @Multipart
+    @PUT("users")
     fun update(
         @Header("Authorization") token: String,
         @Part("username") username: RequestBody,

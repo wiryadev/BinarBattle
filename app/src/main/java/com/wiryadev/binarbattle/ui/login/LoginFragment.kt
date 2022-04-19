@@ -1,4 +1,4 @@
-package com.wiryadev.binarbattle.login
+package com.wiryadev.binarbattle.ui.login
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.wiryadev.binarbattle.R
 import com.wiryadev.binarbattle.databinding.FragmentLoginBinding
 import com.wiryadev.binarbattle.showSnackbar
 
@@ -34,6 +36,11 @@ class LoginFragment : Fragment() {
                 viewModel.login(
                     email = etEmail.text.toString(),
                     password = etPassword.text.toString()
+                )
+            }
+            btnRegister.setOnClickListener {
+                findNavController().navigate(
+                    R.id.action_loginFragment_to_registerFragment
                 )
             }
         }

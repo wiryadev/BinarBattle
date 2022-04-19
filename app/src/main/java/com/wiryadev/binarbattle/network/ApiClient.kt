@@ -13,13 +13,8 @@ object ApiClient {
     private const val BASE_URL = "https://binar-gdd-cc8.herokuapp.com/api/v1/"
 
     fun getApiService(): ApiService {
-        val loggingInterceptor = HttpLoggingInterceptor().setLevel(
-            if (BuildConfig.DEBUG) {
-                HttpLoggingInterceptor.Level.BODY
-            } else {
-                HttpLoggingInterceptor.Level.NONE
-            }
-        )
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
         val client = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
 

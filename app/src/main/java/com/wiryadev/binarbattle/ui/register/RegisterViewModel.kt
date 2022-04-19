@@ -1,9 +1,9 @@
-package com.wiryadev.binarbattle.login
+package com.wiryadev.binarbattle.ui.register
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.wiryadev.binarbattle.entity.LoginResponse
+import com.wiryadev.binarbattle.entity.RegisterResponse
 import com.wiryadev.binarbattle.network.ApiClient
 import com.wiryadev.binarbattle.network.NetworkUtil
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -11,37 +11,44 @@ import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class LoginViewModel : ViewModel() {
+class RegisterViewModel : ViewModel() {
 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData(false)
     val loading: LiveData<Boolean> get() = _loading
 
-    private val _loginResponse: MutableLiveData<LoginResponse> = MutableLiveData()
-    val loginResponse: LiveData<LoginResponse> get() = _loginResponse
+    private val _error: MutableLiveData<Throwable> = MutableLiveData(null)
+    val error: LiveData<Throwable> get() = _error
 
-    fun login(
+    private val _registerResponse: MutableLiveData<RegisterResponse> = MutableLiveData()
+    val registerResponse: LiveData<RegisterResponse> get() = _registerResponse
+
+    fun register(
         email: String,
+        username: String,
         password: String,
     ) {
         val body = NetworkUtil.createRequestBody(
             "email" to email,
+            "username" to username,
             "password" to password,
         )
-        ApiClient.getApiService().login(requestBody = body)
+
+        ApiClient.getApiService().register(requestBody = body)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<LoginResponse> {
-
+            .subscribe(object : Observer<RegisterResponse> {
                 override fun onSubscribe(d: Disposable) {
+                    _error.postValue(null)
                     _loading.postValue(true)
                 }
 
-                override fun onNext(t: LoginResponse) {
-                    _loginResponse.postValue(t)
+                override fun onNext(t: RegisterResponse) {
+                    _registerResponse.postValue(t)
                 }
 
                 override fun onError(e: Throwable) {
                     _loading.postValue(false)
+                    _error.postValue(e)
                 }
 
                 override fun onComplete() {
